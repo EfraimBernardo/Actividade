@@ -1,0 +1,22 @@
+{
+  "name": "actividade",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "github.com/manueldebrito226/Actividade"
+  },
+  "license": "ISC",
+  "author": "Manuel de Brito",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.11"
+  }
+}
