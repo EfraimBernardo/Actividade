@@ -1,3 +1,5 @@
+
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const nodemailer = require("nodemailer");
@@ -36,14 +38,14 @@ app.post("/enviar", async (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "efraimjoaomanuelbernardo@gmail.com",
-      pass: "cism ueyl oidu mwyo" // ⚠️ depois vamos proteger isso com ENV
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
   });
 
   let mailOptions = {
-    from: `"Formulário" <efraimjoaomanuelbernardo@gmail.com>`,
-    to: "efraimjoaomanuelbernardo@gmail.com",
+    from: `"Formulário" <domingossapanda@gmail.com>`,
+    to: "domingossapanda@gmail.com",
     replyTo: Email,
     subject: "Nova mensagem do formulário",
     text: `
@@ -71,4 +73,4 @@ Comentário: ${Comentarios}
 // ✅ SERVIDOR PRONTO PARA O RENDER
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+
