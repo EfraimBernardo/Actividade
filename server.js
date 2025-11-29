@@ -1,49 +1,74 @@
 const express = require("express");
 const path = require("path");
-const app = express();
 const nodemailer = require("nodemailer");
-const PORT = 10000;
 
+const app = express();
+const PORT = process.env.PORT || 10000;
+
+// ✅ PERMITE RECEBER JSON DO FETCH
 app.use(express.json());
+
+// ✅ PERMITE USAR ARQUIVOS DA PASTA PUBLIC
 app.use(express.static("public"));
 
+// ✅ ROTA PRINCIPAL
 app.get("/", (req, res) => {
-res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Rota para enviar email
+// ✅ ROTA POST CORRETA
 app.post("/enviar", async (req, res) => {
-const { Nome, Idade, Email, Telefone, Pretende, Instituicao, Saber, Comentarios } = req.body;
+  const {
+    Nome,
+    Idade,
+    Email,
+    Telefone,
+    Pretende,
+    Instituicao,
+    Saber,
+    Comentarios
+  } = req.body;
 
-// login Gmail usando APP PASSWORD
-let transporter = nodemailer.createTransport({
+  if (!Nome || !Idade || !Email || !Telefone || !Pretende || !Instituicao || !Saber) {
+    return res.status(400).send("❌ Preencha todos os campos obrigatórios.");
+  }
+
+  let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "domingossapanda@gmail.com",
-        pass: process.env.EMAIL_PASS // Use App Password
+      user: "domingossapanda@gmail.com",
+      pass: "uueb kozf hoqc cawe" // ⚠️ depois vamos proteger isso com ENV
     }
-});
+  });
 
-let mailOptions = {
+  let mailOptions = {
     from: `"Formulário" <domingossapanda@gmail.com>`,
     to: "domingossapanda@gmail.com",
     replyTo: Email,
     subject: "Nova mensagem do formulário",
-    text: `Nome: ${Nome}\nIdade: ${Idade}\nEmail: ${Email}\nTelefone: ${Telefone}\nVisão: ${Pretende}\nResultados que quer obter: ${Instituicao}\nComo soube da actividade?: ${Saber}\nComentário: ${Comentarios}`
-};
+    text: `
+Nome: ${Nome}
+Idade: ${Idade}
+Email: ${Email}
+Telefone: ${Telefone}
+Visão: ${Pretende}
+Resultados: ${Instituicao}
+Como soube: ${Saber}
+Comentário: ${Comentarios}
+    `
+  };
 
-try {
+  try {
     await transporter.sendMail(mailOptions);
-    res.send("Mensagem enviada com sucesso!");
-    console.log("Sucesso");
-} catch (error) {
-    console.log(error);
-    res.send("Erro ao enviar a mensagem.");
-}
-
+    console.log("✅ Email enviado com sucesso!");
+    res.send("✅ Mensagem enviada com sucesso!");
+  } catch (error) {
+    console.error("❌ Erro ao enviar email:", error);
+    res.status(500).send("❌ Erro ao enviar a mensagem.");
+  }
 });
 
-// iniciar o servidor
+// ✅ SERVIDOR PRONTO PARA O RENDER
 app.listen(PORT, () => {
-console.log(`Rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
