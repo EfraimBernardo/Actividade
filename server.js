@@ -12,7 +12,7 @@ res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Rota para enviar email
-app.post("/send-email", async (req, res) => {
+app.post("/enviar", async (req, res) => {
 const { Nome, Idade, Email, Telefone, Pretende, Instituicao, Saber, Comentarios } = req.body;
 
 // login Gmail usando APP PASSWORD
