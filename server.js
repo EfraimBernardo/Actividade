@@ -36,14 +36,14 @@ app.post("/enviar", async (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "domingossapanda@gmail.com",
-      pass: "uueb kozf hoqc cawe" // ⚠️ depois vamos proteger isso com ENV
+      user: "efraimjoaomanuelbernardo@gmail.com",
+      pass: "cism ueyl oidu mwyo" // ⚠️ depois vamos proteger isso com ENV
     }
   });
 
   let mailOptions = {
-    from: `"Formulário" <domingossapanda@gmail.com>`,
-    to: "domingossapanda@gmail.com",
+    from: `"Formulário" <efraimjoaomanuelbernardo@gmail.com>`,
+    to: "efraimjoaomanuelbernardo@gmail.com",
     replyTo: Email,
     subject: "Nova mensagem do formulário",
     text: `
