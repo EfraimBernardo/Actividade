@@ -1,120 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Preencha o Formulário</title>
-     <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Preencha o Formulário</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <h1>Prencha este formulário para fazer parte da actividade!</h1>
 
-     <main class="principal">
-          <form id="formulario">
-               <h1>Cadástro</h1>
-               <label for="Nome">Nome</label>
-               <input name="Nome" type="text" id="Nome">
-               <label for="Idade">Idade</label>
-               <input name="Idade" type="number" id="Idade">
-               <label for="Email">Email</label>
-               <input name="Email" type="email" id="Email">
-               <label for="Telefone">Telefone</label>
-               <input name="Telefone" type="number" id="Telefone" placeholder="(xx) xxxxx-xxxx">
-               <label for="Pretende">QUAL É A SUA VISÃO CONSERNENTE A ACTIVIDADE?</label>
-               <input name="Pretende" type="text" id="Pretende">
-               <label for="Instituicao">QUAIS SÃO OS RESULTADOS QUE QUERES OBTER COM ESTA ACTIVIDADE?</label>
-               <input name="Instituicao" type="text" id="Instituicao">
-               <label for="saber">COMO SOUBESTE DA ACTIVIDADE?</label>
-               <input name="Saber" type="text" id="Saber">
-               <label for="Comentarios">Comentários</label>
-               <input name="Comentarios" type="text" id="Comentarios">
-               <button type="submit">Enviar</button>
-          </form>
-     </main>
-</body>
-</html>
+  <h1>Preencha este formulário para fazer parte da actividade!</h1>
 
-<script>
-     document.getElementById("formulario").addEventListener("submit", function(event) {
-            event.preventDefault();
+  <main class="principal">
+    <form id="formulario">
 
-            // Pega os valores corretamente usando trim()
-            const Nome = document.getElementById("Nome").value.trim();
-            
-            const Idade = document.getElementById("Idade").value.trim();
-            const Email = document.getElementById("Email").value.trim();
-            const Telefone = document.getElementById("Telefone").value.trim();
-            const Pretende = document.getElementById("Pretende").value.trim();
-            const Saber = document.getElementById("Saber").value.trim();
-            const Instituicao = document.getElementById("Instituicao").value.trim();
-            const Comentarios = document.getElementById("Comentarios").value.trim();
+      <h1>Cadastro</h1>
 
-            if(!Nome || !Idade || !Email || !Telefone || !Pretende || !Instituicao || !Saber){
-                alert("Preencha todos os campos obrigatórios!");
-                return;
-            }
+      <label for="Nome">Nome</label>
+      <input name="Nome" type="text" id="Nome" required>
 
-            // Cria objeto do cadastro
-            const cadastro = { Nome, Idade, Email, Telefone, Pretende, Instituicao, Saber, Comentarios };
+      <label for="Idade">Idade</label>
+      <input name="Idade" type="number" id="Idade" required>
 
-            // Recupera array existente ou cria novo
-            let cadastros = JSON.parse(localStorage.getItem("cadastros")) || [];
-            cadastros.push(cadastro);
+      <label for="Email">Email</label>
+      <input name="Email" type="email" id="Email" required>
 
-            // Salva no localStorage
-            localStorage.setItem("cadastros", JSON.stringify(cadastros));
+      <label for="Telefone">Telefone</label>
+      <input name="Telefone" type="number" id="Telefone" required>
 
-            alert("Enviado com sucesso!");
+      <label for="Pretende">QUAL É A SUA VISÃO CONSERNENTE A ACTIVIDADE?</label>
+      <input name="Pretende" type="text" id="Pretende" required>
+
+      <label for="Instituicao">QUAIS SÃO OS RESULTADOS QUE QUERES OBTER COM ESTA ACTIVIDADE?</label>
+      <input name="Instituicao" type="text" id="Instituicao" required>
+
+      <label for="Saber">COMO SOUBESTE DA ACTIVIDADE?</label>
+      <input name="Saber" type="text" id="Saber" required>
+
+      <label for="Comentarios">Comentários</label>
+      <input name="Comentarios" type="text" id="Comentarios">
+
+      <button type="submit">Enviar</button>
+
+    </form>
+  </main>
+
+  <script>
+    document.getElementById("formulario").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const data = {
+        Nome: document.getElementById("Nome").value.trim(),
+        Idade: document.getElementById("Idade").value.trim(),
+        Email: document.getElementById("Email").value.trim(),
+        Telefone: document.getElementById("Telefone").value.trim(),
+        Pretende: document.getElementById("Pretende").value.trim(),
+        Instituicao: document.getElementById("Instituicao").value.trim(),
+        Saber: document.getElementById("Saber").value.trim(),
+        Comentarios: document.getElementById("Comentarios").value.trim()
+      };
+
+      if (!data.Nome || !data.Idade || !data.Email || !data.Telefone || !data.Pretende || !data.Instituicao || !data.Saber) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      try {
+        const response = await fetch("/enviar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
         });
-</script>
 
-<script>
-     document.getElementById("formulario").addEventListener("submit", async function (event) {
-        event.preventDefault();
-        const formData = new FormData(this);
-        const data = {
-          Nome: formData.get('Nome'),
-          Idade: formData.get('Idade'),
-          Email: formData.get('Email'),
-          Telefone: formData.get('Telefone'),
-          Pretende: formData.get('Pretende'),
-          Instituicao: formData.get('Instituicao'),
-          Saber: formData.get('Saber'),
-          Comentarios: formData.get('Comentarios')
+        const result = await response.text();
+        alert(result);
+
+        if (response.ok) {
+          this.reset();
         }
 
-        const resposta = await fetch("/enviar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        });
-
-        const resultado = await resposta.text();
-        alert(resultado);
+      } catch (error) {
+        alert("Erro ao enviar os dados. Tente novamente.");
+        console.error(error);
+      }
     });
+  </script>
 
-    document.getElementById("formulario").addEventListener("submit", async function(e) {''
-    e.preventDefault();
-
-    const data = {
-            Nome: document.getElementById("Nome").value,
-            Idade: document.getElementById("Idade").value,
-            Email: document.getElementById("Email").value,
-            Telefone: document.getElementById("Telefone").value,
-            Pretende: document.getElementById("Pretende").value,
-            Saber: document.getElementById("Saber").value,
-            Instituicao: document.getElementById("Instituicao").value,
-            Comentarios: document.getElementById("Comentarios").value
-    };
-
-    const response = await fetch("/send-email", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    });
-
-    const result = await response.text();
-    document.getElementById("status").innerText = result;
-    alert(result);
-});
-</script>
+</body>
+</html>
